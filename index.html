@@ -99,6 +99,12 @@
 			})
 		}
 		function keyDown(keyType) {
+			// 处理The AudioContext was not allowed to start. It must be resumed (or created) after a user gesture on the page. 导致没有声音的问题
+			if (gba.audio.context.state !== 'running') {
+				gba.audio.context.resume().then(() => {
+					console.log('Playback resumed successfully');
+				});
+			}
 			pressLikeKeyboard(keyType, 'keydown')
 		}
 		function keyUp(keyType) {
@@ -351,6 +357,7 @@
 			load.removeAttribute('onclick');
 			var pause = document.getElementById('pause');
 			pause.textContent = "PAUSE";
+			console.log(file);
 			gba.loadRomFromFile(file, function (result) {
 				if (result) {
 					for (var i = 0; i < runCommands.length; ++i) {
